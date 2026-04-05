@@ -16,7 +16,6 @@ import {
   Check,
 } from "lucide-react";
 import {
-  validateFileName,
   processWorkbook,
   exportToXlsx,
   TransposedRow,
