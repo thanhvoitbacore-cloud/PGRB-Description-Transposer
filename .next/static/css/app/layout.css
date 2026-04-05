@@ -1141,8 +1141,8 @@ video {
 .max-w-\[--skeleton-width\] {
   max-width: var(--skeleton-width);
 }
-.max-w-\[1400px\] {
-  max-width: 1400px;
+.max-w-\[1440px\] {
+  max-width: 1440px;
 }
 .max-w-lg {
   max-width: 32rem;
@@ -1153,9 +1153,6 @@ video {
 }
 .max-w-xs {
   max-width: 20rem;
-}
-.max-w-\[1440px\] {
-  max-width: 1440px;
 }
 .flex-1 {
   flex: 1 1 0%;
