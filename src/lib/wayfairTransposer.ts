@@ -80,8 +80,12 @@ export function processWorkbook(workbook: XLSX.WorkBook): TransposedRow[] {
     if (nonEmptyValues.length === 0) return true;
     
     const helperCount = nonEmptyValues.filter((v) => {
-      const low = v.toLowerCase();
-      return helperKeywords.some((kw) => low.includes(kw));
+      const low = v.toLowerCase().trim();
+      return helperKeywords.some((kw) => {
+        // "text" is too common a substring — only match it as a standalone exact value
+        if (kw === "text") return low === "text";
+        return low.includes(kw);
+      });
     }).length;
     
     return helperCount / nonEmptyValues.length > 0.3;
@@ -234,6 +238,16 @@ export function processWorkbook(workbook: XLSX.WorkBook): TransposedRow[] {
       if (isBlank(sku) || !fallbackSkus.has(sku)) continue;
       mergeRowIntoMainData(sku, row);
     }
+  }
+
+  // Additional merge pass: re-scan ALL rows for every SKU already in mainData.
+  // This fills in missing marketing copy or feature bullets that may exist in rows
+  // which were excluded by the "Wayfair SKU" filter (e.g., marketing copy lives in
+  // a row with a different Manufacturer Part Number value).
+  for (const row of main.rows) {
+    const sku = row[main.skuCol!];
+    if (isBlank(sku) || !mainData.has(sku)) continue;
+    mergeRowIntoMainData(sku, row);
   }
 
   const additionalSheets = scoredSheets.filter((s) => s.sheetName !== main.sheetName && s.score > 0);
